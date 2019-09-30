@@ -1,6 +1,26 @@
-# Your custom Twilio Flex Plugin
+# Outbound Tasks ParticipantsCanvas Plugin
+
+## Flex Plugin General Information
 
 Twilio Flex Plugins allow you to customize the appearance and behavior of [Twilio Flex](https://www.twilio.com/flex). If you want to learn more about the capabilities and how to use the API, check out our [Flex documentation](https://www.twilio.com/docs/flex).
+
+## Dialpad Plugin Dependency
+
+This plugin depends on the Dialpad Plugin being available in the Flex UI. You can download and build the Dialpad Plugin from here:
+
+https://github.com/lehel-twilio/plugin-dialpad
+
+Once you have built the plugin and uploaded it to a publicly accessible store (such as Twilio Assets), be sure to update the path to the Dialpad Plugin javascript file in this plugin's `public/appConfig.js` file. This will ensure the Dialpad Plugin is available to you when you run this plugin locally.
+
+## Overview
+
+Outbound tasks created by the Dialpad Plugin only render the CallCanvas by default. This causes various issues when trying to render multiple participants on a call and properly handle call control for those participants. They reason only CallCanvas renders is because the Flex UI is not tracking and storing conference details as it does natively for inbound calls that used the `<Enqueue>` verb.
+
+This plugin and associated serverless functions corrects this issue. The `create-new-task` function updates the Dialpad Plugin's version of this function so that a sync map is created after the task is created, using the task SID as the sync map name. This sync map is where conference details will be stored. 
+
+The `call-outbound-join` function also updates the Dialpad Plugin's version of this function. It handles the various conference events such as participant-join, participant-leave, conference-end, etc, updating the sync map each time with the latest conference change.
+
+The Flex plugin subscribes to this sync map so it receives all of these conference change events. It then writes the conference information to the Flex Redux store the same way the native Flex UI does for inbound calls. This allows the Flex UI to render the ParticipantsCanvas for outbound tasks just as it does for inbound.
 
 ## Setup
 
