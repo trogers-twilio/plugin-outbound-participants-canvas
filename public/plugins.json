@@ -1,0 +1,24 @@
+[
+  {
+    "name": "OutboundParticipantsCanvasPlugin",
+    "version": "0.0.0",
+    "class": "OutboundParticipantsCanvasPlugin",
+    "requires": [
+      {
+        "@twilio/flex-ui": "^1"
+      }
+    ],
+    "src": "http://localhost:3000/plugin-outbound-participants-canvas.js"
+  },
+  {
+    "name": "DialpadPlugin",
+    "version": "0.0.0",
+    "class": "DialpadPlugin",
+    "requires": [
+      {
+        "@twilio/flex-ui": "^1"
+      }
+    ],
+    "src": "https://folly-rail-4787.twil.io/assets/plugin-dialpad_1.2.js"
+  }
+]
