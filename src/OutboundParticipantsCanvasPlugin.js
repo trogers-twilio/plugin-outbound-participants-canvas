@@ -1,7 +1,6 @@
 import React from 'react';
 import { VERSION } from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
-import { TaskHelper } from '@twilio/flex-ui';
 import { ConferenceListenerManager } from './states/ConferencesState';
 import ParticipantActionsButtons from './components/ParticipantActionsButtons';
 import ParticipantName from './components/ParticipantName';
@@ -27,21 +26,12 @@ export default class OutboundParticipantsCanvasPlugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
+    console.debug('Flex UI Version', VERSION);
     ConferenceListenerManager.initialize();
-
-    manager.workerClient.on('reservationCreated', reservation => {
-      console.log('reservation created', reservation);
-      const { task } = reservation;
-      console.warn('task attributes', task.attributes);
-      if (TaskHelper.isCallTask(task) && task.taskChannelUniqueName === 'custom1') {
-        console.warn('starting custom conference listener');
-        ConferenceListenerManager.startListening(task, `worker${task.sid}`);
-      }
-    });
 
     const isNewOutboundTask = props => !props.conference;
 
-    flex.CallCanvas.Content.replace(<div key="custom-call-canvas" />, { if: isNewOutboundTask });
+    flex.CallCanvasActions.Content.replace(<div key="custom-call-canvas" />, { if: isNewOutboundTask });
 
     flex.CallCanvasActions.Content.add(<ConferenceButton
       key="conference"
@@ -57,14 +47,22 @@ export default class OutboundParticipantsCanvasPlugin extends FlexPlugin {
       key="conference-monitor"
     />, { sortOrder: 999 });
 
+    const isAgentDesktopActive = () => {
+      const flexState = manager.store.getState().flex;
+      const view = flexState && flexState.view;
+      const activeView = view && view.activeView;
+      console.debug('active view', activeView);
+      return activeView === 'agent-desktop';
+    }
+
     const isUnknownParticipant = props => props.participant.participantType === 'unknown';
 
     // This section is for the full width ParticipantCanvas
-    flex.ParticipantCanvas.Content.remove('actions');
+    flex.ParticipantCanvas.Content.remove('actions', { if: isAgentDesktopActive });
     flex.ParticipantCanvas.Content.add(
       <ParticipantActionsButtons
         key="custom-actions"
-      />, { sortOrder: 10 }
+      />, { sortOrder: 10, if: isAgentDesktopActive }
     );
     flex.ParticipantCanvas.Content.remove('name', { if: isUnknownParticipant });
     flex.ParticipantCanvas.Content.add(

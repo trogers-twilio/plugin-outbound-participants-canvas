@@ -27,7 +27,7 @@ class ParticipantName extends React.Component {
   };
 
   componentDidMount() {
-    const { participant, serviceBaseUrl, task } = this.props;
+    const { participant, task } = this.props;
     const { callSid } = participant;
 
     if (participant.participantType === 'customer') {
@@ -37,6 +37,7 @@ class ParticipantName extends React.Component {
 
     const manager = Manager.getInstance();
     const { token } = manager.user;
+    const serviceBaseUrl = manager.serviceConfiguration.runtime_domain;
 
     const getCallPropertiesUrl = (
       `https://${serviceBaseUrl}/get-call-properties?token=${token}&callSid=${callSid}`

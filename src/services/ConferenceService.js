@@ -3,7 +3,7 @@ import { ConferenceParticipant, Manager } from '@twilio/flex-ui';
 class ConferenceService {
   constructor() {
     const manager = Manager.getInstance();
-    this.serviceBaseUrl = manager.configuration.serviceBaseUrl;
+    this.serviceBaseUrl = manager.serviceConfiguration.runtime_domain;
   }
 
   // Private functions

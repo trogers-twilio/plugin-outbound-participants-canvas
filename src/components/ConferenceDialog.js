@@ -46,7 +46,10 @@ class ConferenceDialog extends React.Component {
 
   addConferenceParticipant = async () => {
     const { conferenceTo } = this.state;
-    const { from, task, task: { taskSid } } = this.props;
+    const { from, task, task: { attributes, taskSid } } = this.props;
+    const { conversations } = attributes;
+    const originalTaskSid = conversations && conversations.conversation_id;
+    const conferenceName = originalTaskSid || taskSid;
     const conference = task && (task.conference || {});
     const { sid } = conference;
 
@@ -54,7 +57,7 @@ class ConferenceDialog extends React.Component {
     console.log(`Adding ${conferenceTo} to conference`);
     let participantCallSid;
     try {
-      participantCallSid = await ConferenceService.addParticipant(taskSid, from, conferenceTo);
+      participantCallSid = await ConferenceService.addParticipant(conferenceName, from, conferenceTo);
       ConferenceService.addConnectingParticipant(sid, participantCallSid, 'unknown');
     } catch (error) {
       console.error('Error adding conference participant:', error);

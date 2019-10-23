@@ -268,10 +268,10 @@ export class Actions {
           newConference.status = value.status;
           newConference.conferenceSid = value.conference_sid;
         } else {
-          console.warn('conference child key:', child.key);
-          console.warn('conference child value:', child.value);
+          console.debug('conference child key:', child.key);
+          console.debug('conference child value:', child.value);
           const participant = new ConferenceParticipant(child.value, child.key);
-          console.warn('New conference participant:', participant);
+          console.debug('New conference participant:', participant);
           if (participant.participantType !== 'supervisor') {
             newConference.participants.push(participant);
           }
